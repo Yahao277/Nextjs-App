@@ -54,6 +54,14 @@ const Main = (props: IMainProps) => (
                 Blog
               </Link>
             </li>
+            <li className="mr-6">
+              <Link
+                href="/dashboard/"
+                className="border-none text-gray-700 hover:text-gray-900"
+              >
+                Dashboard
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
