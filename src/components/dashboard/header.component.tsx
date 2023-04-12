@@ -1,7 +1,8 @@
-import useAppContext from '@/contexts/app.context';
+/* eslint-disable tailwindcss/no-custom-classname */
+import { useState } from 'react';
 
 const DashboardHeader = () => {
-  const { counter, setCounter } = useAppContext();
+  const [counter, setCounter] = useState(0);
 
   const handleCounter = (e: any) => {
     setCounter(e.target.value as number);

@@ -10,6 +10,7 @@ import {
   Tooltip,
   Tr,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import { ShellWithGroupedMenu } from '@/components/ShellWithGroupedMenu/App';
@@ -22,10 +23,14 @@ import { ProjectApi } from '@/services/project.service';
 import type { NextPageWithLayout } from '../_app';
 
 const Configuration: NextPageWithLayout = () => {
-  const { project, setProject, setPosts } = useProjectContext();
+  const router = useRouter();
+  const {
+    data: { project },
+    setProject,
+    setPosts,
+  } = useProjectContext();
   const { setPost } = usePostContext();
 
-  const [value, setValue] = useState('Nombre proyecto');
   const [projectList, setProjectList] = useState<GptProject[]>([]);
 
   useEffect(() => {
@@ -49,15 +54,21 @@ const Configuration: NextPageWithLayout = () => {
   const select = (item: GptProject) => {
     console.log('select: ', item);
     setProject(item);
-    ProjectApi.getPosts(item.id).then((posts) => {
+    const postsPromise = ProjectApi.getPosts(item.id).then((posts) => {
       console.log('posts: ', posts);
       setPosts(posts);
       return posts;
     });
-    ProjectApi.getPostByIdx(item.id, 0).then((post) => {
-      console.log('post: ', post);
-      setPost(post);
-      return post;
+    const currentPostPromise = ProjectApi.getPostByIdx(item.id, 0).then(
+      (post) => {
+        console.log('post: ', post);
+        setPost(post);
+        return post;
+      }
+    );
+    Promise.all([postsPromise, currentPostPromise]).then(() => {
+      // redirect to planner
+      router.replace('/dashboard/planner');
     });
   };
 

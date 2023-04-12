@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default */
 import { Box, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import type { ReactElement } from 'react';
@@ -9,6 +10,7 @@ import usePostContext from '@/contexts/post.context';
 import useProjectContext from '@/contexts/project.context';
 import { ProjectApi } from '@/services/project.service';
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const postHtml = `
 <p><img decoding="async" class="size-full wp-image-1342 aligncenter"
         src="https://cdn.pianodreamers.com/wp-content/uploads/2017/07/yamaha-p115-featured.jpg"
@@ -690,7 +692,9 @@ const postHtml = `
 
 const Previewer = () => {
   const router = useRouter();
-  const { project } = useProjectContext();
+  const {
+    data: { project },
+  } = useProjectContext();
   const { post, setPost } = usePostContext();
   const { id, idx } = router.query;
 

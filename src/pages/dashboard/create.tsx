@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 import {
   Button,
   FormControl,
@@ -29,6 +30,10 @@ const GenerationStrategy: any = {
   HEADER: 'n-headers',
 };
 
+const separateKeywords = (keywords: string) => {
+  return keywords.split('\n').filter((kw) => kw.trim() !== '');
+};
+
 const ProjectCreationPage: NextPageWithLayout = () => {
   const [keywords, setKeywords] = useState<string>('');
 
@@ -37,9 +42,19 @@ const ProjectCreationPage: NextPageWithLayout = () => {
     setKeywords(e.target.value);
   };
 
-  const lines = useMemo(() => {
-    return keywords.split('\n').length;
-  }, [keywords]);
+  const handleSave = () => {
+    console.log('handleSave');
+  };
+
+  const handleSubmit = (values, actions) => {
+    const changed = {
+      ...values,
+      keywords: separateKeywords(values.keywords),
+    };
+    console.log('submitData: ', changed);
+
+    actions.setSubmitting(false);
+  };
 
   return (
     <PageContent>
@@ -50,84 +65,87 @@ const ProjectCreationPage: NextPageWithLayout = () => {
           keywords: '',
           strategy: GenerationStrategy.STANDARD,
         }}
-        onSubmit={(values, actions) => {
-          console.log(values);
-          actions.setSubmitting(false);
-        }}
+        onSubmit={handleSubmit}
       >
-        {(props) => (
-          <Form>
-            <Field name="name">
-              {({ field }) => (
-                <FormControl>
-                  <FormLabel>Nombre proyecto</FormLabel>
-                  <Input {...field} type="text" />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="type">
-              {({ field }) => (
-                <FormControl>
-                  <FormLabel as="legend">Tipo de proyecto</FormLabel>
-                  <RadioGroup defaultValue="AI" {...field} isDisabled={true}>
-                    <HStack spacing="24px">
-                      <Radio {...field} value="Scraping">
-                        Scraping
-                      </Radio>
-                      <Radio {...field} value="AI">
-                        Generación con AI
-                      </Radio>
-                    </HStack>
-                  </RadioGroup>
-                </FormControl>
-              )}
-            </Field>
-            <Field name="strategy">
-              {({ field }) => (
-                <FormControl>
-                  <FormLabel as="legend">Estrategia de generación</FormLabel>
-                  <RadioGroup
-                    defaultValue={GenerationStrategy.STANDARD}
-                    {...field}
-                  >
-                    <HStack spacing="24px">
-                      {Object.keys(GenerationStrategy).map((key) => (
-                        <Radio
-                          {...field}
-                          value={GenerationStrategy[key]}
-                          key={key}
-                        >
-                          {GenerationStrategy[key]}
+        {(props) => {
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          const lines = useMemo(() => {
+            return props.values.keywords.split('\n').length;
+          }, [props.values.keywords]);
+          return (
+            <Form>
+              <Field name="name">
+                {({ field }) => (
+                  <FormControl>
+                    <FormLabel>Nombre proyecto</FormLabel>
+                    <Input {...field} type="text" />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="type">
+                {({ field }) => (
+                  <FormControl>
+                    <FormLabel as="legend">Tipo de proyecto</FormLabel>
+                    <RadioGroup defaultValue="AI" {...field} isDisabled={true}>
+                      <HStack spacing="24px">
+                        <Radio {...field} value="Scraping">
+                          Scraping
                         </Radio>
-                      ))}
-                    </HStack>
-                  </RadioGroup>
-                </FormControl>
-              )}
-            </Field>
-            <Field name="keywords">
-              {({ field }) => (
-                <FormControl>
-                  <FormLabel>Listado de keyword ({lines} lines)</FormLabel>
-                  <Textarea
-                    placeholder="One keyword each line"
-                    value={keywords}
-                    onChange={handleText}
-                    height="300px"
-                  />
-                </FormControl>
-              )}
-            </Field>
-            <Button
-              mt={4}
-              colorScheme="teal"
-              isLoading={props.isSubmitting}
-              type="submit"
-            >
-              Create
-            </Button>
-          </Form>
-        )}
+                        <Radio {...field} value="AI">
+                          Generación con AI
+                        </Radio>
+                      </HStack>
+                    </RadioGroup>
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="strategy">
+                {({ field }) => (
+                  <FormControl>
+                    <FormLabel as="legend">Estrategia de generación</FormLabel>
+                    <RadioGroup
+                      defaultValue={GenerationStrategy.STANDARD}
+                      {...field}
+                    >
+                      <HStack spacing="24px">
+                        {Object.keys(GenerationStrategy).map((key) => (
+                          <Radio
+                            {...field}
+                            value={GenerationStrategy[key]}
+                            key={key}
+                          >
+                            {GenerationStrategy[key]}
+                          </Radio>
+                        ))}
+                      </HStack>
+                    </RadioGroup>
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="keywords">
+                {({ field }) => (
+                  <FormControl>
+                    <FormLabel>Listado de keyword ({lines} lines)</FormLabel>
+                    <Textarea
+                      {...field}
+                      placeholder="One keyword each line"
+                      height="300px"
+                    />
+                  </FormControl>
+                )}
+              </Field>
+              <Button
+                mt={4}
+                colorScheme="teal"
+                isLoading={props.isSubmitting}
+                type="submit"
+                onClick={handleSave}
+              >
+                Create
+              </Button>
+            </Form>
+          );
+        }}
       </Formik>
     </PageContent>
   );

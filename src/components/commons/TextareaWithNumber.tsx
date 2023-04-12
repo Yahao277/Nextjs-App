@@ -16,7 +16,7 @@ const TextareaWithNumber = ({ value, onChange, ...rest }: any) => {
           const lineNumber = i + 1;
           const y = scrollTop + i * lineHeight;
           const lineEl = document.createElement('div');
-          lineEl.textContent = lineNumber;
+          lineEl.textContent = String(lineNumber);
           lineEl.style.position = 'absolute';
           lineEl.style.top = `${y}px`;
           lineEl.style.left = '10px';
@@ -42,7 +42,7 @@ const TextareaWithNumber = ({ value, onChange, ...rest }: any) => {
     };
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     onChange(e);
   };
 

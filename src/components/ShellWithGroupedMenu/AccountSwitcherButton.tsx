@@ -1,9 +1,10 @@
-import { Box, Flex, FlexProps, HStack, Img, useMenuButton } from '@chakra-ui/react'
-import * as React from 'react'
-import { HiSelector } from 'react-icons/hi'
+import type { FlexProps } from '@chakra-ui/react';
+import { Box, Flex, HStack, Img, useMenuButton } from '@chakra-ui/react';
+import * as React from 'react';
+import { HiSelector } from 'react-icons/hi';
 
 export const AccountSwitcherButton = (props: FlexProps) => {
-  const buttonProps = useMenuButton(props)
+  const buttonProps = useMenuButton(props);
   return (
     <Flex
       as="button"
@@ -45,5 +46,5 @@ export const AccountSwitcherButton = (props: FlexProps) => {
         <HiSelector />
       </Box>
     </Flex>
-  )
-}
+  );
+};

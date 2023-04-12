@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Button,
   Modal,
@@ -11,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-import useProjectContext from '@/contexts/project.context';
+// eslint-disable-next-line import/no-named-as-default
 
 export type IModalProps = {
   isOpen: boolean;
@@ -19,16 +20,17 @@ export type IModalProps = {
   onClose: () => void;
 };
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const BulkEditModal = ({ isOpen, onOpen, onClose }: IModalProps) => {
   const [keywords, setKeywords] = React.useState('');
-  const { addBulkKeywords } = useProjectContext();
+  // const { addBulkKeywords } = useProjectContext();
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setKeywords(event.target.value);
   };
 
   const handleSave = () => {
-    addBulkKeywords(keywords.split('\n').map((keyword) => ({ keyword })));
+    // addBulkKeywords(keywords.split('\n').map((keyword) => ({ keyword })));
     onClose();
   };
 

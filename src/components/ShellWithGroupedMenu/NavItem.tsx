@@ -1,21 +1,21 @@
-import { Box, HStack } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
-import * as React from 'react'
-import { BsCaretRightFill } from 'react-icons/bs'
+import { Box, HStack } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { BsCaretRightFill } from 'react-icons/bs';
 
 interface NavItemProps {
-  href?: string
-  label: string
-  subtle?: boolean
-  active?: boolean
-  icon: React.ReactElement
-  endElement?: React.ReactElement
-  children?: React.ReactNode
+  href?: string;
+  label: string;
+  subtle?: boolean;
+  active?: boolean;
+  icon: React.ReactElement;
+  endElement?: React.ReactElement;
+  children?: React.ReactNode;
 }
 
 export const NavItem = (props: NavItemProps) => {
   const router = useRouter();
-  const { active, subtle, icon, children, label, endElement, href } = props
+  const { active, subtle, icon, children, label, endElement, href } = props;
 
   const handleClick = () => {
     if (href) {
@@ -23,8 +23,7 @@ export const NavItem = (props: NavItemProps) => {
     } else {
       console.log('No href provided');
     }
-    
-  }
+  };
 
   return (
     <HStack
@@ -43,11 +42,15 @@ export const NavItem = (props: NavItemProps) => {
       <Box fontSize="lg" color={active ? 'currentcolor' : 'gray.400'}>
         {icon}
       </Box>
-      <Box flex="1" fontWeight="inherit" color={subtle ? 'gray.400' : undefined}>
+      <Box
+        flex="1"
+        fontWeight="inherit"
+        color={subtle ? 'gray.400' : undefined}
+      >
         {label}
       </Box>
       {endElement && !children && <Box>{endElement}</Box>}
       {children && <Box fontSize="xs" flexShrink={0} as={BsCaretRightFill} />}
     </HStack>
-  )
-}
+  );
+};

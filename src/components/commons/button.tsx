@@ -1,4 +1,5 @@
-import tw from "tailwind-styled-components";
+/* eslint-disable import/no-extraneous-dependencies */
+import tw from 'tailwind-styled-components';
 
 export const Button = tw.button`
   mx-4 px-4 py-2

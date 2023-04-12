@@ -1,9 +1,7 @@
-import { ShellTopNavbar } from "@/components/ShellWithTopNavbar/App";
+import { ShellWithGroupedMenu } from '@/components/ShellWithGroupedMenu/App';
 
 const Example1 = () => {
-  return (
-    <ShellTopNavbar/>
-  );
-}
+  return <ShellWithGroupedMenu />;
+};
 
 export default Example1;

@@ -1,3 +1,5 @@
+// @ts-nocheck
+/* eslint-disable no-plusplus */
 import {
   Button,
   IconButton,
@@ -12,8 +14,9 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { BiCaretRightCircle, BiInfoSquare, BiTrash } from 'react-icons/bi';
+import { usePagination, useTable } from 'react-table';
 
 // eslint-disable-next-line import/no-named-as-default
 import useProjectContext from '@/contexts/project.context';
@@ -24,74 +27,209 @@ import EditableCell from './EditableCell';
 const PlannerTable = () => {
   const toast = useToast();
   const router = useRouter();
-  const { project: projectData, setPosts } = useProjectContext();
+  const {
+    data: { project: projectData, posts },
+    setPosts,
+  } = useProjectContext();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(100);
-
-  // Logic for displaying current items
-  const indexOfLastRow = currentPage * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = projectData.posts.slice(indexOfFirstRow, indexOfLastRow);
-
-  // Logic for displaying page numbers
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(projectData.posts.length / rowsPerPage); i++) {
-    pageNumbers.push(i);
-  }
-
-  const handleEdit = (id: number, field: string, value: string) => {
-    const newData = projectData.posts.map((item, position) =>
+  const handleEdit = useCallback((id: number, field: string, value: string) => {
+    const newData = posts.map((item, position) =>
       position === indexOfFirstRow + id ? { ...item, [field]: value } : item
     );
-    setPosts(newData);
+    // setPosts(newData);
     toast({
       title: 'Data updated.',
       status: 'success',
       duration: 2000,
       isClosable: true,
     });
-  };
+  }, []);
 
-  const handleDelete = (keyword: string) => {
-    const newData = projectData.posts.filter(
-      (item) => item.keyword !== keyword
-    );
-    setPosts(newData);
+  const handleDelete = useCallback((keyword: string) => {
+    const newData = posts.filter((item) => item.keyword !== keyword);
+    // setPosts(newData);
     toast({
       title: 'Data deleted.',
       status: 'success',
       duration: 2000,
       isClosable: true,
     });
-  };
+  }, []);
 
-  const handleClick = (event: { target: { id: any } }) => {
-    setCurrentPage(Number(event.target.id));
-  };
-
-  const showPreview = (item: PostData) => {
+  const showPreview = useCallback((item: PostData) => {
     console.log('showPreview: ', item.keyword);
     router.replace(`/dashboard/previewer?idx=${item.idx}`);
-  };
+  }, []);
 
-  const renderPageNumbers = pageNumbers.map((number) => (
-    <Button
-      key={number}
-      id={number}
-      onClick={handleClick}
-      bg={currentPage === number ? 'blue.500' : 'gray.100'}
-      _hover={{ bg: 'blue.500', color: 'white' }}
-      color={currentPage === number ? 'white' : 'gray.700'}
-      mr={1}
-      mb={2}
-    >
-      {number}
-    </Button>
-  ));
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Keyword',
+        accessor: 'keyword',
+        Cell: ({ value, row: { index } }) => (
+          <EditableCell
+            isDisabled={true}
+            submitOnBlur={false}
+            value={value}
+            onSubmit={(newValue) => handleEdit(index, 'keyword', newValue)}
+          />
+        ),
+      },
+      {
+        Header: 'Title',
+        accessor: 'title',
+        Cell: ({ value, row: { index } }) => (
+          <EditableCell
+            isDisabled={true}
+            submitOnBlur={false}
+            value={value}
+            onSubmit={(newValue) => handleEdit(index, 'title', newValue)}
+          />
+        ),
+      },
+      {
+        Header: 'Status',
+        accessor: 'done',
+        Cell: ({ value, row: { index } }) => (
+          <div>{value ? 'Done' : 'Pending'}</div>
+        ),
+      },
+      {
+        Header: 'Actions',
+        accessor: 'actions',
+        Cell: ({ row: { original } }) => (
+          <>
+            <Tooltip
+              label="Show Detail"
+              aria-label="Show detail"
+              fontSize={'sm'}
+            >
+              <IconButton
+                aria-label="Detail"
+                icon={<BiInfoSquare />}
+                size={'sm'}
+                mr={2}
+                onClick={() => showPreview(original)}
+              />
+            </Tooltip>
+            <Tooltip label="Regenerate" aria-label="Regenerate" fontSize={'sm'}>
+              <IconButton
+                aria-label="Regenerate"
+                icon={<BiCaretRightCircle />}
+                isDisabled={true}
+                size={'sm'}
+                mr={2}
+                onClick={() => console.log('Generate age')}
+              />
+            </Tooltip>
+            <Tooltip label="Delete" aria-label="delete" fontSize={'sm'}>
+              <IconButton
+                aria-label="Delete"
+                isDisabled={true}
+                size={'sm'}
+                icon={<BiTrash />}
+                onClick={() => handleDelete(original.keyword)}
+              />
+            </Tooltip>
+          </>
+        ),
+      },
+    ],
+    [handleEdit, handleDelete, showPreview]
+  );
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    prepareRow,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
+  } = useTable(
+    {
+      columns,
+      data: posts,
+      initialState: { pageIndex: 0, pageSize: 100 },
+    },
+    usePagination
+  );
 
   return (
     <Stack spacing={4}>
+      <Table variant="simple" size="sm" {...getTableProps()}>
+        <Thead>
+          {headerGroups.map((headerGroup, i) => (
+            <Tr {...headerGroup.getHeaderGroupProps()} key={i}>
+              {headerGroup.headers.map((column, j) => (
+                <Th {...column.getHeaderProps()} key={j}>
+                  {column.render('Header')}
+                </Th>
+              ))}
+            </Tr>
+          ))}
+        </Thead>
+        <Tbody {...getTableBodyProps()}>
+          {page.map((row, i) => {
+            prepareRow(row);
+            return (
+              <Tr {...row.getRowProps()} key={i}>
+                {row.cells.map((cell, j) => (
+                  <Td {...cell.getCellProps()} key={j}>
+                    {cell.render('Cell')}
+                  </Td>
+                ))}
+              </Tr>
+            );
+          })}
+        </Tbody>
+      </Table>
+      <Stack direction="row" justifyContent="center">
+        <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          {'<<'}
+        </Button>{' '}
+        <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          {'<'}
+        </Button>{' '}
+        <Button onClick={() => nextPage()} disabled={!canNextPage}>
+          {'>'}
+        </Button>{' '}
+        <Button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          {'>>'}
+        </Button>{' '}
+        <span>
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+          }}
+        >
+          {[100, 200, 300].map((pgSize) => (
+            <option key={pgSize} value={pgSize}>
+              Show {pgSize}
+            </option>
+          ))}
+        </select>
+      </Stack>
+    </Stack>
+  );
+};
+
+export default PlannerTable;
+
+/*
       <Table variant="simple" size="sm">
         <Thead>
           <Tr>
@@ -183,11 +321,5 @@ const PlannerTable = () => {
           ))}
         </Tbody>
       </Table>
-      <Stack direction="row" justifyContent="center">
-        {renderPageNumbers}
-      </Stack>
-    </Stack>
-  );
-};
 
-export default PlannerTable;
+*/

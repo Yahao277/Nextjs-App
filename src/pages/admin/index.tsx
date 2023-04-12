@@ -1,11 +1,5 @@
-import { AdminLayout } from "@/components/admin/layout";
-
 const AdminPanel = () => {
-  return (
-    <>
-    Admin panel
-    </>
-  );
-}
+  return <>Admin panel</>;
+};
 
 export default AdminPanel;

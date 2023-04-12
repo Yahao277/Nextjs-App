@@ -1,14 +1,7 @@
+import type { GptPost, GptProject } from './gpt-project.model';
+
 export type ProjectAction = {
-  type:
-    | 'FULL_UPDATE'
-    | 'UPDATE_TASK'
-    | 'UPDATE_POSTS'
-    | 'DELETE_TASK'
-    | 'TOGGLE_TASK_DONE'
-    | 'ADD_BULK_KEYWORDS'
-    | 'ADD_KEYWORD'
-    | 'EDIT_KEYWORD'
-    | 'DELETE_KEYWORD';
+  type: 'FULL_UPDATE' | 'UPDATE_POSTS' | 'UPDATE_PROJECT';
   payload: any;
 };
 
@@ -22,11 +15,8 @@ export type PostData = {
 };
 
 export type ProjectData = {
-  id?: string;
-  projectType?: 'SCRAPED' | 'GPT';
-  name: string;
-  stage: any;
-  posts: PostData[];
+  project: GptProject;
+  posts: GptPost[];
 };
 
 export type Action = {

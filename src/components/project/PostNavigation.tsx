@@ -22,11 +22,13 @@ interface NavItemProps {
 }
 
 const PostNavigation = (props: NavItemProps) => {
-  const { project } = useProjectContext();
+  const {
+    data: { project },
+  } = useProjectContext();
   const { post, setPost } = usePostContext();
   const [titleType, setTitleType] = React.useState('id');
   const [textLabel, setTextLabel] = React.useState('');
-  const { active, subtle, icon, children, label, endElement } = props;
+  const { subtle, children, endElement } = props;
 
   const switchType = () => {
     if (titleType === TitleType.title) {
@@ -40,18 +42,20 @@ const PostNavigation = (props: NavItemProps) => {
     if (titleType === TitleType.title) {
       setTextLabel(post.title || TitleType.title);
     } else {
-      setTextLabel(post.idx.toString() || TitleType.i);
+      setTextLabel(post.idx.toString() || TitleType.id);
     }
   }, [titleType, post]);
 
   const getNextPost = () => {
     console.log('getNextPost');
     const current = post.idx;
-    ProjectApi.getPostByIdx(project.id as string, current + 1).then((post) => {
-      console.log('post: ', post);
-      setPost(post);
-      return post;
-    });
+    ProjectApi.getPostByIdx(project.id as string, current + 1).then(
+      (postRes) => {
+        console.log('post: ', postRes);
+        setPost(postRes);
+        return postRes;
+      }
+    );
   };
 
   const getPrevPost = () => {
@@ -59,11 +63,13 @@ const PostNavigation = (props: NavItemProps) => {
     const current = post.idx;
     if (current === 0) return;
     if (project.name === 'No') return;
-    ProjectApi.getPostByIdx(project.id as string, current - 1).then((post) => {
-      console.log('post: ', post);
-      setPost(post);
-      return post;
-    });
+    ProjectApi.getPostByIdx(project.id as string, current - 1).then(
+      (postRes) => {
+        console.log('post: ', postRes);
+        setPost(postRes);
+        return postRes;
+      }
+    );
   };
 
   // return (
