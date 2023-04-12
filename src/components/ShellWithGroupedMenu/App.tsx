@@ -1,26 +1,30 @@
-import { Box, Circle, Flex, Stack, useColorModeValue as mode } from '@chakra-ui/react'
-import * as React from 'react'
+import {
+  Box,
+  Circle,
+  Flex,
+  Stack,
+  useColorModeValue as mode,
+} from '@chakra-ui/react';
+import * as React from 'react';
 import {
   BiBuoy,
+  BiCalendar,
   BiCog,
-  BiCommentAdd,
   BiCreditCard,
-  BiEnvelope,
   BiHome,
-  BiNews,
   BiPurchaseTagAlt,
   BiRecycle,
   BiRedo,
   BiUserCircle,
   BiWallet,
-} from 'react-icons/bi'
-import { PageContent } from './PageContent'
-import { PageHeader } from './PageHeader'
-import { AccountSwitcher } from './AccountSwitcher'
-import { NavGroup } from './NavGroup'
-import { NavItem } from './NavItem'
+} from 'react-icons/bi';
 
-export const ShellWithGroupedMenu = (props: {children?: React.ReactNode}) => {
+import PostNavigation from '../project/PostNavigation';
+import { AccountSwitcher } from './AccountSwitcher';
+import { NavGroup } from './NavGroup';
+import { NavItem } from './NavItem';
+
+export const ShellWithGroupedMenu = (props: { children?: React.ReactNode }) => {
   return (
     <Box height="100vh" overflow="hidden" position="relative">
       <Flex h="full" id="app-container">
@@ -30,18 +34,40 @@ export const ShellWithGroupedMenu = (props: {children?: React.ReactNode}) => {
             <Stack spacing="8" flex="1" overflow="auto" pt="8">
               <Stack spacing="1">
                 <NavItem active icon={<BiHome />} label="Get Started" />
-                <NavItem icon={<BiCommentAdd />} label="Inbox" />
+                <PostNavigation
+                  icon={<BiCreditCard />}
+                  label="Current Project"
+                />
               </Stack>
-              <NavGroup label="Your Business">
-                <NavItem icon={<BiCreditCard />} label="Transactions" />
-                <NavItem icon={<BiUserCircle />} label="Customers" />
-                <NavItem icon={<BiWallet />} label="Income" />
-                <NavItem icon={<BiRedo />} label="Transfer" />
+              <NavGroup label="Gpt">
+                <NavItem
+                  icon={<BiWallet />}
+                  label="Projects Status"
+                  href="/dashboard/config/"
+                />
+                <NavItem
+                  icon={<BiRedo />}
+                  label="Create"
+                  href="/dashboard/create/"
+                />
+                <NavItem
+                  icon={<BiCalendar />}
+                  label="Planner"
+                  href="/dashboard/planner/"
+                />
               </NavGroup>
 
-              <NavGroup label="Seller Tools">
-                <NavItem icon={<BiNews />} label="Payment Pages" />
-                <NavItem icon={<BiEnvelope />} label="Invoices" />
+              <NavGroup label="Scraping">
+                <NavItem
+                  icon={<BiCreditCard />}
+                  label="Overview"
+                  href="/dashboard/"
+                />
+                <NavItem
+                  icon={<BiUserCircle />}
+                  label="Previewer"
+                  href="/dashboard/previewer/"
+                />
                 <NavItem icon={<BiPurchaseTagAlt />} label="Plans" />
                 <NavItem icon={<BiRecycle />} label="Subsription" />
               </NavGroup>
@@ -59,8 +85,8 @@ export const ShellWithGroupedMenu = (props: {children?: React.ReactNode}) => {
             </Box>
           </Flex>
         </Box>
-        <Box bg={mode('gray.100', 'gray.800')} flex="1" p="6">
-          { props.children }
+        <Box bg={mode('gray.100', 'gray.800')} flex="1" p="6" overflow="scroll">
+          {props.children}
           {/* <Box
             w="full"
             h="full"
@@ -71,5 +97,5 @@ export const ShellWithGroupedMenu = (props: {children?: React.ReactNode}) => {
         </Box>
       </Flex>
     </Box>
-  )
-}
+  );
+};

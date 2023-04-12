@@ -1,8 +1,8 @@
 import React, { useContext, createContext } from 'react';
 
 export type AppContextType = {
-  counter: number;
-  setCounter: React.Dispatch<React.SetStateAction<number>>;
+  project: string;
+  setProject: React.Dispatch<React.SetStateAction<string>>;
 };
 
 //Context
@@ -10,7 +10,7 @@ export const AppContext = createContext<AppContextType|null>(null);
 
 //Provider
 export const AppContextProvider = ({ children }: { children:React.ReactNode}) => {
-  const [counter, setCounter] = React.useState(0);
+  const [project, setProject] = React.useState("Not Selected");
 
   //ComponentDidMouunt
   React.useEffect(() => {
@@ -19,11 +19,11 @@ export const AppContextProvider = ({ children }: { children:React.ReactNode}) =>
 
   //
   const values = React.useMemo(() => (
-    { counter,      // States que seran visibles en el contexto.
-      setCounter,   // Funciones que son exportadas para manejo externo.
+    { project,      // States que seran visibles en el contexto.
+    setProject,   // Funciones que son exportadas para manejo externo.
     }), 
     [ 
-      counter ]);   // States que serán visibles en el contexto.
+      project ]);   // States que serán visibles en el contexto.
 
   // Interface donde será expuesto como proveedor y envolverá la App.
   return <AppContext.Provider value={values}>{children}</AppContext.Provider>;

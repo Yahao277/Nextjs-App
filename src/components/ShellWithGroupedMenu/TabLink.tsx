@@ -1,7 +1,10 @@
 import * as React from 'react'
 import { chakra, HTMLChakraProps, useColorModeValue as mode } from '@chakra-ui/react'
+import Link from 'next/link'
 
-export const TabLink = (props: HTMLChakraProps<'a'>) => (
+export const TabLink = (props: HTMLChakraProps<'a'>) => {
+  const { href, ...propsWitoutHref} = {...props};
+  return (
   <chakra.a
     {...props}
     fontWeight="semibold"
@@ -17,5 +20,7 @@ export const TabLink = (props: HTMLChakraProps<'a'>) => (
       color: mode('blue.600', 'blue.400'),
       borderColor: 'currentColor',
     }}
-  />
-)
+  >
+  </chakra.a>
+);
+}

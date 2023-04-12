@@ -1,11 +1,9 @@
-"use client";
-import { useRouter } from 'next/navigation';
+'use client';
 
 import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
 
 const Index = () => {
-
   return (
     <Main
       meta={

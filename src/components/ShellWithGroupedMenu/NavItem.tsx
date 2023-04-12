@@ -1,4 +1,5 @@
 import { Box, HStack } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 import * as React from 'react'
 import { BsCaretRightFill } from 'react-icons/bs'
 
@@ -13,7 +14,18 @@ interface NavItemProps {
 }
 
 export const NavItem = (props: NavItemProps) => {
-  const { active, subtle, icon, children, label, endElement } = props
+  const router = useRouter();
+  const { active, subtle, icon, children, label, endElement, href } = props
+
+  const handleClick = () => {
+    if (href) {
+      router.replace(href);
+    } else {
+      console.log('No href provided');
+    }
+    
+  }
+
   return (
     <HStack
       w="full"
@@ -26,6 +38,7 @@ export const NavItem = (props: NavItemProps) => {
       bg={active ? 'gray.700' : undefined}
       _hover={{ bg: 'gray.700' }}
       _active={{ bg: 'gray.600' }}
+      onClick={handleClick}
     >
       <Box fontSize="lg" color={active ? 'currentcolor' : 'gray.400'}>
         {icon}
