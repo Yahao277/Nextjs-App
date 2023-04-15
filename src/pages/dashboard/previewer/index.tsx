@@ -1,5 +1,5 @@
 /* eslint-disable import/no-named-as-default */
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, Heading, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import type { ReactElement } from 'react';
 import React, { useEffect } from 'react';
@@ -722,7 +722,19 @@ const Previewer = () => {
           {/* <div dangerouslySetInnerHTML={{ __html: postHtml }} /> */}
           <Box> Title: {post.title}</Box>
           <Box> Outline: {post.outline}</Box>
-          <Box> {post.content} </Box>
+
+          <Heading as="h2" size="lg" textAlign={'center'} margin={5}>
+            Generated Content
+          </Heading>
+          <Box> {post.generatedContent} </Box>
+          <Heading as="h2" size="lg" textAlign={'center'} margin={5}>
+            Styled Content
+          </Heading>
+          <Box
+            dangerouslySetInnerHTML={{
+              __html: post.generatedContent || 'empty',
+            }}
+          />
         </Box>
       </VStack>
     </PageContent>

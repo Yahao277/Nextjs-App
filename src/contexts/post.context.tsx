@@ -13,7 +13,9 @@ const initialState: GptPost = {
   idx: 0,
   keyword: 'No seleccionado',
   projectId: '0',
-  done: false,
+  generatedContent: '',
+  content: '',
+  status: '',
 };
 
 // Reducer

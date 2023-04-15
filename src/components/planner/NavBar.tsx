@@ -16,8 +16,11 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
-import { BiBookAdd, BiDownload, BiFilterAlt } from 'react-icons/bi';
+import { BiBookAdd, BiDownload, BiFilterAlt, BiRefresh } from 'react-icons/bi';
 import { FiMenu, FiPlus } from 'react-icons/fi';
+
+import { useProjectContext } from '@/contexts/project.context';
+import { ProjectApi } from '@/services/project.service';
 
 import BulkEditModal from './modals/BulkEditModal';
 import FilterModal from './modals/FilterModal';
@@ -40,6 +43,10 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 );
 
 const NavBar = () => {
+  const {
+    data: { project },
+    setPosts,
+  } = useProjectContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenBulkModal,
@@ -67,12 +74,12 @@ const NavBar = () => {
       onOpenBulkModal();
     }
   };
-  const handleClickBulkEdit = () => {
-    if (isOpenBulkModal) {
-      onCloseBulkModal();
-    } else {
-      onOpenBulkModal();
-    }
+  const handleRefresh = () => {
+    ProjectApi.getPosts(project.id).then((posts) => {
+      console.log('refreshPosts: ', posts);
+      setPosts(posts);
+      return posts;
+    });
   };
   const onClearFilter = () => {
     // TODO: clear filter
@@ -108,12 +115,23 @@ const NavBar = () => {
               colorScheme={'teal'}
               size={'sm'}
               mr={4}
+              onClick={handleRefresh}
+              leftIcon={<BiRefresh />}
+            >
+              Refresh
+            </Button>
+            <Button
+              variant={'solid'}
+              colorScheme={'teal'}
+              size={'sm'}
+              mr={4}
               onClick={handleClickFilter}
               leftIcon={<BiFilterAlt />}
             >
               Filter
             </Button>
             <Button
+              isDisabled={true}
               variant={'solid'}
               colorScheme={'teal'}
               size={'sm'}
@@ -122,16 +140,6 @@ const NavBar = () => {
               leftIcon={<FiPlus />}
             >
               Bulk Add
-            </Button>
-            <Button
-              variant={'solid'}
-              colorScheme={'teal'}
-              size={'sm'}
-              mr={4}
-              onClick={handleClickBulkEdit}
-              leftIcon={<FiPlus />}
-            >
-              Bulk Edit
             </Button>
             <Button
               variant={'solid'}

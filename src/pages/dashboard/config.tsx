@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import {
-  Button,
+  IconButton,
   Stack,
   Table,
   Tbody,
@@ -12,11 +12,14 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { BiPause, BiPlay, BiPointer, BiTrash } from 'react-icons/bi';
 
+import { DeleteModal } from '@/components/commons/modal';
 import { ShellWithGroupedMenu } from '@/components/ShellWithGroupedMenu/App';
 import { PageContent } from '@/components/ShellWithGroupedMenu/PageContent';
 import { usePostContext } from '@/contexts/post.context';
 import { useProjectContext } from '@/contexts/project.context';
+import { useDeleteProjectModal } from '@/hooks/useDeleteProjectModal';
 import type { GptProject } from '@/models/gpt-project.model';
 import { ProjectApi } from '@/services/project.service';
 
@@ -32,6 +35,13 @@ const Configuration: NextPageWithLayout = () => {
   const { setPost } = usePostContext();
 
   const [projectList, setProjectList] = useState<GptProject[]>([]);
+  const {
+    isModalOpen,
+    projectToDelete,
+    openDeleteModal,
+    closeDeleteModal,
+    deleteProject,
+  } = useDeleteProjectModal();
 
   useEffect(() => {
     console.log('useEffect');
@@ -40,16 +50,6 @@ const Configuration: NextPageWithLayout = () => {
       return projects;
     });
   }, []);
-
-  // useEffect(() => {
-  //   console.log('useEffect project');
-  //   if (!project._id) return;
-  //   console.log('useEffect project: ', project._id);
-  //   ProjectApi.getPosts(project._id).then((posts) => {
-  //     setPosts(posts);
-  //     return posts;
-  //   });
-  // }, [project]);
 
   const select = (item: GptProject) => {
     console.log('select: ', item);
@@ -90,6 +90,11 @@ const Configuration: NextPageWithLayout = () => {
     });
   };
 
+  const deleteOnConfirm = () => {
+    setProjectList(projectList.filter((p) => p.id !== projectToDelete?.id));
+    deleteProject();
+  };
+
   return (
     <PageContent>
       Projector Actual: {project.name || 'Selecciona un proyecto'}
@@ -124,36 +129,46 @@ const Configuration: NextPageWithLayout = () => {
                     {`${projectItem.progress?.donePosts}/${projectItem.progress?.totalPosts}`}
                   </Td>
                   <Td>
-                    <Tooltip label="Start" aria-label="start" fontSize={'md'}>
-                      <Button
-                        aria-label="start"
-                        colorScheme="teal"
-                        size={'sm'}
-                        onClick={() => start(projectItem)}
-                      >
-                        Start
-                      </Button>
-                    </Tooltip>
-                    <Tooltip label="Stop" aria-label="stop" fontSize={'md'}>
-                      <Button
-                        aria-label="stop"
-                        colorScheme="teal"
-                        size={'sm'}
-                        marginX={2}
-                        onClick={() => stop(projectItem)}
-                      >
-                        Stop
-                      </Button>
-                    </Tooltip>
                     <Tooltip label="Select" aria-label="select" fontSize={'md'}>
-                      <Button
+                      <IconButton
                         aria-label="Select"
                         colorScheme="teal"
+                        icon={<BiPointer />}
                         size={'sm'}
+                        marginRight={2}
                         onClick={() => select(projectItem)}
-                      >
-                        Select
-                      </Button>
+                      />
+                    </Tooltip>
+                    <Tooltip label="Start" aria-label="start" fontSize={'md'}>
+                      <IconButton
+                        aria-label="start"
+                        colorScheme="teal"
+                        icon={<BiPlay />}
+                        size={'sm'}
+                        marginRight={2}
+                        onClick={() => start(projectItem)}
+                      />
+                    </Tooltip>
+                    <Tooltip label="Stop" aria-label="stop" fontSize={'md'}>
+                      <IconButton
+                        aria-label="stop"
+                        colorScheme="teal"
+                        icon={<BiPause />}
+                        size={'sm'}
+                        marginRight={2}
+                        onClick={() => stop(projectItem)}
+                      />
+                    </Tooltip>
+                    <Tooltip label="Delete" aria-label="delete" fontSize={'md'}>
+                      <IconButton
+                        icon={<BiTrash />}
+                        aria-label="Delete"
+                        variant="outline"
+                        colorScheme="teal"
+                        size={'sm'}
+                        marginRight={2}
+                        onClick={() => openDeleteModal(projectItem)}
+                      />
                     </Tooltip>
                   </Td>
                 </Tr>
@@ -161,6 +176,12 @@ const Configuration: NextPageWithLayout = () => {
           </Tbody>
         </Table>
       </Stack>
+      <DeleteModal
+        isModalOpen={isModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={deleteOnConfirm}
+        onCancel={closeDeleteModal}
+      />
     </PageContent>
   );
 };

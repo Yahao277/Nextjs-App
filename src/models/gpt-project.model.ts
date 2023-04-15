@@ -14,6 +14,7 @@ export type GptProject = {
 };
 
 export type GptPost = {
+  content: string;
   id: string;
   idx: number;
   projectId: string;
@@ -26,5 +27,5 @@ export type GptPost = {
   imageUrl?: string;
   tokensConsumed?: number;
   priceConsumed?: number;
-  done: boolean;
+  status: string;
 };

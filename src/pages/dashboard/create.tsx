@@ -8,13 +8,15 @@ import {
   Radio,
   RadioGroup,
   Textarea,
+  useToast,
 } from '@chakra-ui/react';
 import { Field, Form, Formik } from 'formik';
 import type { ReactElement } from 'react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { ShellWithGroupedMenu } from '@/components/ShellWithGroupedMenu/App';
 import { PageContent } from '@/components/ShellWithGroupedMenu/PageContent';
+import { ProjectApi } from '@/services/project.service';
 
 import type { NextPageWithLayout } from '../_app';
 // ignore implicit any entire file
@@ -26,8 +28,8 @@ const ProjectType = {
 };
 
 const GenerationStrategy: any = {
-  STANDARD: 'standard',
-  HEADER: 'n-headers',
+  OUTLINE: 'OUTLINE',
+  HEADER: 'HEADER',
 };
 
 const separateKeywords = (keywords: string) => {
@@ -35,25 +37,38 @@ const separateKeywords = (keywords: string) => {
 };
 
 const ProjectCreationPage: NextPageWithLayout = () => {
-  const [keywords, setKeywords] = useState<string>('');
-
-  const handleText = (e: any) => {
-    console.log(e.target.value);
-    setKeywords(e.target.value);
-  };
-
-  const handleSave = () => {
-    console.log('handleSave');
-  };
-
+  const toast = useToast();
   const handleSubmit = (values, actions) => {
     const changed = {
       ...values,
       keywords: separateKeywords(values.keywords),
     };
-    console.log('submitData: ', changed);
+    console.log('submiting data: ', changed);
 
-    actions.setSubmitting(false);
+    ProjectApi.createProject(changed)
+      .then((res) => {
+        toast({
+          title: 'Project created',
+          description: 'Your project has been created',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+        });
+        actions.resetForm();
+      })
+      .catch((err) => {
+        toast({
+          title: 'Error creating project',
+          description: 'There was an error creating your project',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+        });
+        console.log(err);
+      })
+      .finally(() => {
+        actions.setSubmitting(false);
+      });
   };
 
   return (
@@ -104,7 +119,7 @@ const ProjectCreationPage: NextPageWithLayout = () => {
                   <FormControl>
                     <FormLabel as="legend">Estrategia de generación</FormLabel>
                     <RadioGroup
-                      defaultValue={GenerationStrategy.STANDARD}
+                      defaultValue={GenerationStrategy.OUTLINE}
                       {...field}
                     >
                       <HStack spacing="24px">
@@ -139,7 +154,6 @@ const ProjectCreationPage: NextPageWithLayout = () => {
                 colorScheme="teal"
                 isLoading={props.isSubmitting}
                 type="submit"
-                onClick={handleSave}
               >
                 Create
               </Button>

@@ -89,10 +89,8 @@ const PlannerTable = () => {
       },
       {
         Header: 'Status',
-        accessor: 'done',
-        Cell: ({ value, row: { index } }) => (
-          <div>{value ? 'Done' : 'Pending'}</div>
-        ),
+        accessor: 'status',
+        Cell: ({ value, row: { _index } }) => <div>{value}</div>,
       },
       {
         Header: 'Actions',
@@ -228,98 +226,3 @@ const PlannerTable = () => {
 };
 
 export default PlannerTable;
-
-/*
-      <Table variant="simple" size="sm">
-        <Thead>
-          <Tr>
-            <Th>Keyword</Th>
-            <Th>Title</Th>
-            <Th>Actions</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {currentRows.map((item, pos) => (
-            <Tr key={pos}>
-              {projectData.projectType === 'GPT' && (
-                <>
-                  <Td>
-                    <EditableCell
-                      submitOnBlur={false}
-                      value={item.keyword}
-                      onSubmit={(value) => handleEdit(pos, 'keyword', value)}
-                    />
-                  </Td>
-                  <Td>
-                    <EditableCell
-                      submitOnBlur={false}
-                      value={item.title}
-                      onSubmit={(value) => handleEdit(pos, 'title', value)}
-                    />
-                  </Td>
-                </>
-              )}
-
-              {projectData.projectType === 'SCRAPED' && (
-                <>
-                  <Td>
-                    <EditableCell
-                      submitOnBlur={false}
-                      value={item.keyword}
-                      onSubmit={(value) => handleEdit(pos, 'keyword', value)}
-                    />
-                  </Td>
-                  <Td>
-                    <EditableCell
-                      submitOnBlur={false}
-                      value={item.title}
-                      onSubmit={(value) => handleEdit(pos, 'title', value)}
-                    />
-                  </Td>
-                </>
-              )}
-
-              <Td>
-                <Tooltip
-                  label="Show Detail"
-                  aria-label="Show detail"
-                  fontSize={'sm'}
-                >
-                  <IconButton
-                    aria-label="Detail"
-                    icon={<BiInfoSquare />}
-                    size={'sm'}
-                    mr={2}
-                    onClick={() => showPreview(item)}
-                  />
-                </Tooltip>
-                <Tooltip
-                  label="Regenerate"
-                  aria-label="Regenerate"
-                  fontSize={'sm'}
-                >
-                  <IconButton
-                    aria-label="Regenerate"
-                    icon={<BiCaretRightCircle />}
-                    isDisabled={true}
-                    size={'sm'}
-                    mr={2}
-                    onClick={() => console.log('Generate age')}
-                  />
-                </Tooltip>
-                <Tooltip label="Delete" aria-label="delete" fontSize={'sm'}>
-                  <IconButton
-                    aria-label="Delete"
-                    isDisabled={true}
-                    size={'sm'}
-                    icon={<BiTrash />}
-                    onClick={() => handleDelete(item.keyword)}
-                  />
-                </Tooltip>
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-
-*/

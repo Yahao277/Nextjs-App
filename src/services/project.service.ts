@@ -24,6 +24,18 @@ export const ProjectApi = {
       .then((res) => res.json())
       .catch((error) => console.error(error));
   },
+  createProject: (project: GptProject) => {
+    const endpoint = `${host}/gpt-project`;
+    return fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(project),
+    })
+      .then((res) => res.json())
+      .catch((error) => console.error(error));
+  },
   getPosts(projectId: string): Promise<GptPost[]> {
     const endpoint = `${host}/gpt-project/${projectId}/post?summary=true`;
     return fetch(endpoint)
@@ -75,6 +87,14 @@ export const ProjectApi = {
       headers: {
         'Content-Type': 'application/json',
       },
+    })
+      .then((res) => res.json())
+      .catch((error) => console.error(error));
+  },
+  delete: (projectId: string): Promise<void> => {
+    const endpoint = `${host}/gpt-project/${projectId}`;
+    return fetch(endpoint, {
+      method: 'DELETE',
     })
       .then((res) => res.json())
       .catch((error) => console.error(error));
